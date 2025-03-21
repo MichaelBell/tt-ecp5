@@ -1,0 +1,5 @@
+*.log
+*.bit
+*.svf
+*out.config
+*.ys
