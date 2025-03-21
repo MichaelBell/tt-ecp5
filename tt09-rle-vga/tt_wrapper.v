@@ -17,6 +17,7 @@ module tt_ecp5_wrapper (
     wire [7:0] uio_out;
     wire [7:0] uio_oe;
 
+    // This seems to work correctly.  Instantiating TRELLIS_IO seems not to work!
     genvar i;
     generate
         for (i = 0; i < 8; i = i + 1) begin
@@ -25,7 +26,7 @@ module tt_ecp5_wrapper (
         end
     endgenerate
 
-    tt_um_factory_test i_test(
+    tt_um_MichaelBell_rle_vga i_project(
         .ui_in(ui_in),
         .uo_out(uo_out),
         .uio_in(uio_in),

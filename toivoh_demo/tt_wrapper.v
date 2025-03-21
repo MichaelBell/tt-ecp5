@@ -25,7 +25,7 @@ module tt_ecp5_wrapper (
         end
     endgenerate
 
-    tt_um_factory_test i_test(
+    tt_um_toivoh_demo_tt10 i_project(
         .ui_in(ui_in),
         .uo_out(uo_out),
         .uio_in(uio_in),
