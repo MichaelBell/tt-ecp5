@@ -6,10 +6,11 @@ from ttcontrol import GPIO_UIO
 
 from pio_spi import PIOSPI
 
-def program(filename, addr=0):
-    # Put the ECP5 into reset
-    rst = Pin(2, Pin.OUT, value=1)
-    rst.off()
+def program(filename, addr=0, ecp_reset=True):
+    if ecp_reset:
+        # Put the ECP5 into reset
+        rst = Pin(2, Pin.OUT, value=1)
+        rst.off()
 
     flash_sel = Pin(GPIO_UIO[0], Pin.OUT)
     flash_sel.on()

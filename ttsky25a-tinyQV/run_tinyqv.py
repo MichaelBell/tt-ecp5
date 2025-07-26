@@ -52,7 +52,7 @@ def spi_cmd(spi, data, sel, dummy_len=0, read_len=0):
     return read_buf
 
 def setup_flash():
-    spi = PIOSPI(2, Pin(GPIO_UIO[1]), Pin(GPIO_UIO[2]), Pin(GPIO_UIO[3]), freq=10000000)
+    spi = PIOSPI(1, Pin(GPIO_UIO[1]), Pin(GPIO_UIO[2]), Pin(GPIO_UIO[3]), freq=5000000)
 
     flash_sel = Pin(GPIO_UIO[0], Pin.OUT)
     ram_a_sel = Pin(GPIO_UIO[6], Pin.OUT)
@@ -61,13 +61,15 @@ def setup_flash():
     flash_sel.on()
     ram_a_sel.on()
     ram_b_sel.on()    
-    
+
     # Leave CM mode if in it
     spi_cmd(spi, [0xFF], flash_sel)
     spi._sm.active(0)
     del spi
+    
+    gc.collect()    
 
-    sm = rp2.StateMachine(0, qspi_read, 16_000_000, in_base=Pin(GPIO_UIO[0]), out_base=Pin(GPIO_UIO[0]), sideset_base=Pin(GPIO_UIO[3]))
+    sm = rp2.StateMachine(0, qspi_read, 8_000_000, in_base=Pin(GPIO_UIO[0]), out_base=Pin(GPIO_UIO[0]), sideset_base=Pin(GPIO_UIO[3]))
     sm.active(1)
     
     # Read 1 byte from address 0 to get into continuous read mode
@@ -149,6 +151,15 @@ def run(query=True, stop=True):
     # All other inputs pulled low
     for i in range(7):
         Pin(GPIO_UI_IN[i], Pin.IN, pull=Pin.PULL_DOWN)
+
+    Pin(GPIO_UIO[0], Pin.IN, pull=Pin.PULL_UP)
+    Pin(GPIO_UIO[1], Pin.IN, pull=None)
+    Pin(GPIO_UIO[2], Pin.IN, pull=None)
+    Pin(GPIO_UIO[3], Pin.IN, pull=None)
+    Pin(GPIO_UIO[4], Pin.IN, pull=None)
+    Pin(GPIO_UIO[5], Pin.IN, pull=None)
+    Pin(GPIO_UIO[6], Pin.IN, pull=Pin.PULL_UP)
+    Pin(GPIO_UIO[7], Pin.IN, pull=Pin.PULL_UP)
 
     clk = Pin(GPIO_PROJECT_CLK, Pin.OUT, value=0)
     rst_n = Pin(GPIO_PROJECT_RST_N, Pin.OUT, value=1)
@@ -271,9 +282,15 @@ def run(query=True, stop=True):
         print()
 
 def execute(filename, tinyqv="/tinyqv.bit"):
+    ecp_reset = True
+    if tinyqv is None:
+        # Put TinyQV into reset, which should release the QSPI
+        rst_n = Pin(GPIO_PROJECT_RST_N, Pin.OUT, value=0)
+        ecp_reset = False
     if filename is not None:
-        flash_prog.program(filename)
+        flash_prog.program(filename, ecp_reset=ecp_reset)
     gc.collect()
-    ecp_prog.program(tinyqv)
+    if tinyqv is not None:
+        ecp_prog.program(tinyqv)
     gc.collect()
     run(query=False, stop=True)

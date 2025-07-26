@@ -4,6 +4,26 @@ import rp2
 
 from pio_spi import PIOSPI
 
+def check_id():
+    rst = Pin(2, Pin.OUT, value=1)
+    rst.off()
+    rst.on()
+    
+    sel = Pin(20, Pin.OUT, value=1)
+    spi = PIOSPI(1, 18, 5, 4, freq=8000000)
+
+    print("ECP ID")
+    buf = bytearray(4)
+    sel.off()
+    spi.write(b'\xE0\x00\x00\x00') # READ_ID
+    spi.readinto(buf)
+    sel.on()
+    for b in buf: print("%02x " % (b,), end="")
+    print()
+
+    if buf == b"\x41\x11\x10\x43":
+        print("OK")    
+
 def program(filename):
     file = open(filename, "rb")
     

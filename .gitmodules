@@ -1,3 +1,6 @@
 [submodule "ttcad25a-tinyQV/ttcad25a-tinyQV"]
 	path = ttcad25a-tinyQV/ttcad25a-tinyQV
 	url = git@github.com:MichaelBell/ttcad25a-tinyQV.git
+[submodule "ttsky25a-tinyQV/ttsky25a-tinyQV"]
+	path = ttsky25a-tinyQV/ttsky25a-tinyQV
+	url = git@github.com:TinyTapeout/ttsky25a-tinyQV.git
