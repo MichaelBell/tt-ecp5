@@ -36,6 +36,9 @@ reprog:
 regate: ${TARGET}.bit
 	mpremote mount . + exec "import os; os.chdir('/'); import run_tinyqv; run_tinyqv.execute(None, '/remote/$(TARGET).bit')"
 
+reset:
+	mpremote mount . + exec "import os; os.chdir('/'); import run_tinyqv; run_tinyqv.execute(None, None)"
+
 clean:
 	rm -f *.svf *.bit *.config *.ys *.log
 

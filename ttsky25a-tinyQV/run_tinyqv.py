@@ -140,7 +140,8 @@ def setup_ram():
     del spi        
 
 def run(query=True, stop=True):
-    machine.freq(128_000_000)
+    machine.freq(112_000_000)
+    #machine.freq(128_000_000)
 
     if query:
         input("Reset? ")
@@ -213,7 +214,7 @@ def run(query=True, stop=True):
     time.sleep(0.001)
     clk.off()
 
-    sm = rp2.StateMachine(1, pio_capture, 64_000_000, in_base=Pin(21))
+    sm = rp2.StateMachine(1, pio_capture, 112_000_000, in_base=Pin(21))
 
     capture_len=1280
     buf = bytearray(capture_len)
@@ -236,7 +237,8 @@ def run(query=True, stop=True):
 
     #uart = UART(1, baudrate=57600, tx=Pin(GPIO_UI_IN[7]), rx=Pin(GPIO_UO_OUT[0]))
     time.sleep(0.001)
-    clk = PWM(Pin(GPIO_PROJECT_CLK), freq=32_000_000, duty_u16=32768)
+    clk = PWM(Pin(GPIO_PROJECT_CLK), freq=56_000_000, duty_u16=32768)
+    #clk = PWM(Pin(GPIO_PROJECT_CLK), freq=32_000_000, duty_u16=32768)
 
     # Wait for DMA to complete
     while rx_dma.active():
